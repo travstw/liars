@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+        <script src="https://kit.fontawesome.com/537b332010.js" crossorigin="anonymous"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <link rel="stylesheet" href="styles.css"/>
+
+    </head>
+    <body>
+
+            <div class="test-button-container">
+                <!-- <a class="buttons" id="leave">Leave</a> -->
+                <a class="buttons" id="start">Start</a>
+                <a class="buttons" id="roll">Roll</a>
+                <div class="bid-holder">
+                    <input autocomplete="false" class="bid-input" type="number" min="1" id="count" placeholder="Count">
+                    <input autocomplete="false" class="bid-input" type="number" min="1" max="6" id="value" placeholder="Die">
+                    <a class="buttons" id="bid">Bid</a>
+                </div>
+
+                <a class="buttons" id="call">Call</a>
+
+            </div>
+        <div class="debug-content">
+            <div class="debug-row-one">
+                <textarea id="multi-test" type="text"></textarea>
+                <div class="debug-column-container">
+                    <div class="id" id="game-id"></div>
+                    <div class="id" id="user-id"></div>
+                </div>
+            </div>
+            <div class="debug-row-two">
+                <div class="debug" id="rest"></div>
+                <div class="debug" id="socket"></div>
+            </div>
+        </div>
+        <div class="debug" id="game"></div>
+        <script type="module" src="index.js"></script>
+    </body>
+</html>
