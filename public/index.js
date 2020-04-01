@@ -62,6 +62,7 @@ socket.on('update', (data) => {
 // buttons
 // const $leave = document.querySelector('#leave');
 const $start = document.querySelector('#start');
+const $initialRoll = document.querySelector('#initial-roll');
 const $roll = document.querySelector('#roll');
 const $bid = document.querySelector('#bid');
 const $call = document.querySelector('#call');
@@ -71,6 +72,16 @@ const $value = document.querySelector('#value');
 
 $start.addEventListener('click', () => {
     controller.start(userId, gameId).then(game => {
+        if (!game) {
+            return;
+        }
+        gameState = game;
+        update('rest');
+    });
+});
+
+$initialRoll.addEventListener('click', () => {
+    controller.initialRoll(userId, gameId).then(game => {
         if (!game) {
             return;
         }
@@ -123,8 +134,10 @@ const update = (from) => {
     } else {
         $socket.innerHTML = JSON.stringify(gameState);
     }
-    console.log(gameState);
-    $game.innerHTML = JSON.stringify(gameState);
+
+    $game.innerHTML = `${gameState.players.map(p => p.user + ': ' + p.dice + '\n').toString()}
+                        Current Bid: count-> ${gameState.currentBid ? gameState.currentBid.count : null} die-> ${gameState.currentBid ? gameState.currentBid.value : null}
+                        Next Turn: ${gameState.nextTurn}`;
 }
 
 

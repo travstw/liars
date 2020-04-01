@@ -124,3 +124,24 @@ export const roll = async (userId, gameId) => {
         console.error(e);
     }
 };
+
+export const initialRoll = async (userId, gameId) => {
+    const url = host + '/initial-roll/' + gameId;
+    try {
+        const res = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'userid': userId,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!res.ok) {
+            return { error: 'An error occured processing your roll, please try again'};
+        }
+
+        return await res.json();
+    } catch (e) {
+        console.error(e);
+    }
+};

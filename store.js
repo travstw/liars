@@ -31,7 +31,7 @@ const addPlayer = (gameId, userId, first) => {
 }
 
 const removePlayer = (gameId, userId) => {
-    const game = players.get(gameId);
+    let game = players.get(gameId);
     if (!game) {
         throw new Error('Game not found');
     }

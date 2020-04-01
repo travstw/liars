@@ -2,7 +2,7 @@ const socket = require('socket.io');
 const store = require('./store');
 const game = require('./game');
 let io;
-const users = [];
+let users = [];
 
 
 const init = (server) => {
@@ -23,6 +23,10 @@ const init = (server) => {
 
         socket.on('disconnect', () => {
             const user = removeUser(socket.id);
+            if (!user || user.userId) {
+                // Server restart, stale client?
+                return;
+            }
             game.leave(user.userId, user.gameId)
                 .then(game => {
                     updateSocket(user.gameId, game);

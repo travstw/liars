@@ -129,6 +129,23 @@ app.put('/roll/:gameId', async (req, res, next) => {
     }
 });
 
+app.put('/initial-roll/:gameId', async (req, res, next) => {
+    const userId = req.headers.userid;
+    const gameId = req.params.gameId;
+    try {
+        if (!store.checkPlayer(gameId, userId)) {
+            return res.status(403).send('Not a player in game: ' + gameId);
+        }
+        const rolled = await game.initialRoll(userId, gameId);
+        const decorated = game.decorateClientPayload(userId, rolled)
+
+        socket.updateSocket(gameId, rolled);
+        res.send(decorated);
+    } catch(e) {
+        next(e);
+    }
+});
+
 
 
 
