@@ -1,0 +1,59 @@
+.Header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    /* background-color: #4C364D; */
+    padding: 15px 0px 5px 0px;
+}
+
+.Header-title {
+    font-size: 3.5rem;
+    font-weight: 600;
+}
+
+.Header-controls {
+    display: flex;
+    flex-direction: row;
+}
+
+.Header-control-item {
+    margin-left: 20px;
+    font-size: 3.0rem;
+}
+
+.Header-icon:hover {
+    cursor: pointer;
+    font-size: 3.2rem;
+}
+
+.Header-die {
+    color: #9EE493;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+  }
+
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 100px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    font-size: 1.25rem;
+
+    /* Position the tooltip */
+    top: 110%;
+    left: 50%;
+    margin-left: -60px;
+    position: absolute;
+    z-index: 1;
+  }
+
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+  }

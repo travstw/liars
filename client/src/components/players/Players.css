@@ -1,0 +1,18 @@
+.Players {
+    /* padding: 10px; */
+    height: 100%;
+    overflow: scroll;
+}
+
+.Players .Players-player:nth-child(odd) {
+    background-color:  rgba(64, 85, 99, 0.5);
+}
+
+.Players-player {
+    /* padding: 2px; */
+    padding-left: 25px;
+}
+
+.selected {
+    border: 1px solid #9EE493;
+}

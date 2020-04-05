@@ -1,0 +1,19 @@
+.BidButton {
+    width: 100%;
+}
+
+.BidBtn {
+    border-radius: 0px;
+    width: 100%;
+    height: 7vh;
+    font-size: 2.5rem;
+    font-weight: 500;
+    background-color: #86BBD8;
+    color: #2F4858;
+    border: none;
+}
+
+.BidBtn:hover {
+    cursor: pointer;
+    background-color: #F1FFFA;
+}

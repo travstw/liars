@@ -1,0 +1,39 @@
+/* #FDF0C4 yellow-ish
+ #F7A992 peach-ish
+ #82A0C2 blue-ish
+ #4C364D purple-ish */
+
+.Player {
+    width: 100%;
+    margin: 5px;
+    padding: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.Player-dice {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+
+}
+
+.Player-name {
+    font-size: 2rem;
+    width: 150px;
+}
+
+.Player-die {
+    height: 40px;
+    width: 40px;
+    font-size: 3rem;
+    color: #4C364D;
+    background-color: #F1FFFA;
+    border-radius: 10px;
+    text-align: center;
+    vertical-align: middle;
+    margin-left: 15px;
+}
+

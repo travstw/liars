@@ -1,0 +1,42 @@
+.Summary {
+
+}
+
+.Summary-container {
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 2rem;
+}
+
+.Summary-item-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.Summary-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-right: 10px;
+    text-transform: uppercase;
+}
+
+.Summary-bid {
+    color: #9EE493;
+}
+
+.Summary-leaf {
+    color: #9EE493;
+}
+
+.Summary-die {
+    margin-left: 10px;
+    font-size: 3rem;
+}
+

@@ -4,13 +4,13 @@ const game = require('./game');
 const store = require('./store');
 const app = express();
 const server = require('http').Server(app);
-const port = 3000;
+const port = 5000;
 const socket = require('./socket');
 
 const io = socket.init(server);
 
 
-app.use(express.static(__dirname + '/public'));
+// app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {

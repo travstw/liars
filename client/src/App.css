@@ -1,0 +1,108 @@
+ /* colors */
+ /*
+ #336699  med blue
+ #F1FFFA white
+ #86BBD8 light blue
+ #2F4858 dark blue
+ #9EE493 green highlight
+ #FE365E red
+  */
+
+ /* resets */
+*,
+*::after,
+*::before {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: inherit;
+}
+
+html {
+    font-size: 62.5%;
+    font-family: 'Roboto', 'sans-serif';
+    background-color:#2F4858;
+    color: #F1FFFA;
+}
+
+body {
+    /* background-color: indigo; */
+    box-sizing: border-box;
+    padding: 3rem;
+}
+
+
+.App {
+  display: flex;
+  flex-direction: column;
+  margin: 5px 25px;
+  overflow: hidden;
+}
+
+.App-container {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  height: 80vh;
+  width: 70%;
+  margin: auto;
+  border: 1px solid rgba(51,102,153, 1);
+  border-top: 1px solid #9EE493;
+}
+
+.App-left-panel {
+  flex-grow: 4;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  overflow: hidden;
+  /* border: 1px solid #F7A992; */
+}
+
+.App-right-panel {
+  /* border: 1px solid #F7A992; */
+  flex-grow: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* border: 1px solid #9EE493; */
+  /* background-color: #F1FFFA; */
+
+}
+
+.App-right-panel-item {
+  height: 100%;
+}
+
+.App-header {
+  width: 70%;
+  margin: auto;
+}
+
+.App-summary {
+  background-color: #336699;
+  padding: 3px;
+}
+
+.App-history {
+  flex-grow: 2;
+}
+
+.App-turn {
+  flex-grow: 1;
+}
+
+.App-players {
+  flex-grow: 10;
+  overflow: hidden;
+}
+
+
+.App-hand {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid #9EE493;
+  /* flex-grow: 1; */
+  background-color: #336699;
+}
+
+

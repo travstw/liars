@@ -1,0 +1,14 @@
+.HistoryItem {
+    padding-top: 15px;
+    padding-left: 10px;
+}
+
+.HistoryItem-message {
+    font-size: 1.75rem;
+    padding-left: 5px;
+}
+
+.HistoryItem-time {
+    font-size: 1.25rem;
+    color: #86BBD8
+}
