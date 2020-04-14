@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useContext }from 'react';
 import {v4 as uuidv4 } from 'uuid';
 import './Hand.css';
 import Die from '../die/Die';
+import { GameContext } from '../../context/game.context';
+
 
 const DICE_LABELS = new Map([
     [6, 'six'],
@@ -13,24 +15,25 @@ const DICE_LABELS = new Map([
 ]);
 
 function Hand(props) {
+    const { hand, roll, round } = useContext(GameContext);
     const getStringValue = (die) => {
         return DICE_LABELS.get(die);
     }
 
     const handleClick = () => {
-        props.state.roll();
+        roll();
     }
 
     let item;
-    if (!props.state.hand) {
+    if (!hand) {
         // watcher... show nothing
-    } else if (props.state.hand.length) {
-        item = props.state.hand.map(die => <Die key={uuidv4()} value={getStringValue(die)} />)
+    } else if (hand.length) {
+        item = hand.map(die => <Die key={uuidv4()} value={getStringValue(die)} />)
     } else {
         item = <button onClick={handleClick} className="Hand-roll-button">Roll</button>
     }
 
-    const natural = props.state.round && props.state.round.natural;
+    const natural = round && round.natural;
 
     return (
         <div className="Hand">

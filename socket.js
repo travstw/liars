@@ -55,11 +55,11 @@ const getUsersInGame = (gameId) => {
     return users.filter(user => user.gameId === gameId);
 }
 
-const updateSocket = (gameId, updatedGame) => {
+const updateSocket = (gameId, updatedGame, gameStateId) => {
     const users = getUsersInGame(gameId);
     console.log('users', users);
     users.forEach(user => {
-        const decorated = game.decorateClientPayload(user.userId, updatedGame);
+        const decorated = game.decorateClientPayload(user.userId, updatedGame, gameStateId);
 
         io.to(user.id).emit('update', decorated);
     });

@@ -38,14 +38,17 @@ class Round {
         const activePlayers = this.players.filter(p => p.dice > 0);
         if (activePlayers.length === Object.keys(this.rolls).length) {
             this.active = true;
+            this.startedOn = Date.now();
         }
-        this.startedOn = Date.now();
+
         return this.active;
     }
 
     addTurn(turn) {
+        const user = this.players.find(p => p.userId === turn.userId);
         const t = {
-            userId: turn.userId,
+            user: user.user,
+            userId: user.userId,
             count: turn.type === 'bid' ? +turn.count: undefined,
             value: turn.type === 'bid' ? +turn.value: undefined,
             type: turn.type

@@ -1,0 +1,73 @@
+.Game {
+    display: flex;
+    flex-direction: column;
+    margin: 5px 25px;
+    overflow: hidden;
+  }
+
+  .Game-container {
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+    height: 80vh;
+    width: 70%;
+    margin: auto;
+    border: 1px solid rgba(51,102,153, 1);
+    border-top: 1px solid #9EE493;
+  }
+
+  .Game-left-panel {
+    flex-grow: 4;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    overflow: hidden;
+    /* border: 1px solid #F7A992; */
+  }
+
+  .Game-right-panel {
+    /* border: 1px solid #F7A992; */
+    flex-grow: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* border: 1px solid #9EE493; */
+    /* background-color: #F1FFFA; */
+
+  }
+
+  .Game-right-panel-item {
+    height: 100%;
+  }
+
+  .Game-header {
+    width: 70%;
+    margin: auto;
+  }
+
+  .Game-summary {
+    background-color: #336699;
+    padding: 3px;
+  }
+
+  .Game-history {
+    flex-grow: 2;
+  }
+
+  .Game-turn {
+    flex-grow: 1;
+  }
+
+  .Game-players {
+    flex-grow: 10;
+    overflow: hidden;
+  }
+
+
+  .Game-hand {
+    display: flex;
+    align-items: center;
+    border-top: 1px solid #9EE493;
+    /* flex-grow: 1; */
+    background-color: #336699;
+  }

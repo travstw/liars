@@ -1,17 +1,21 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './Clicker.css';
+import { GameContext } from '../../context/game.context';
+
 
 function Clicker(props) {
+    const { countChange, count } = useContext(GameContext);
     const increment = () => {
-        props.state.countChange(props.state.count + 1);
+        countChange(count + 1);
     }
 
     const decrement = () => {
-        props.state.countChange(props.state.count - 1);
+        countChange(count - 1);
     }
 
     const handleChange = (evt) => {
-        console.log('change')
+        countChange(+evt.target.value);
+
     }
 
     return (
@@ -19,7 +23,7 @@ function Clicker(props) {
             <i onClick={props.allowed.countUp ? increment: undefined}
                 className={`Clicker-caret ${props.allowed.countUp ? '' : 'disabled'} fas fa-caret-up`}>
             </i>
-            <input onChange={handleChange} value={props.state.count} id="Clicker-count"></input>
+            <input onChange={handleChange} value={count} id="Clicker-count"></input>
             <i onClick={props.allowed.countDown ? decrement: undefined}
                 className={`Clicker-caret ${props.allowed.countDown ? '' : 'disabled'} fas fa-caret-down`}>
             </i>

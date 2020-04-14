@@ -1,7 +1,7 @@
-const host = 'http://localhost:3000';   // move to config
+// const host = 'http://localhost:3000';   // move to config
 
 export const get = async (userId, gameId) => {
-    const url = host + '/game/' + gameId;
+    const url = 'game/' + gameId;
     try {
         const res = await fetch(url, {
             method: 'GET',
@@ -18,7 +18,7 @@ export const get = async (userId, gameId) => {
 };
 
 export const join = async (user, gameId) => {
-    const url = host + '/join/' + gameId;
+    const url = 'join/' + gameId;
     let res;
     try {
         res = await fetch(url, {
@@ -42,7 +42,7 @@ export const join = async (user, gameId) => {
 };
 
 export const create = async (user) => {
-    const url = host + '/game';
+    const url = 'game';
     try {
         const res = await fetch(url, {
             method: 'POST',
@@ -62,7 +62,7 @@ export const create = async (user) => {
 };
 
 export const update = async (userId, gameId, turn) => {
-    const url = host + '/turn/' + gameId;
+    const url = 'turn/' + gameId;
     try {
         const res = await fetch(url, {
             method: 'PUT',
@@ -84,7 +84,7 @@ export const update = async (userId, gameId, turn) => {
 };
 
 export const start = async (userId, gameId) => {
-    const url = host + '/game/' + gameId + '/start';
+    const url = 'game/' + gameId + '/start';
     try {
         const res = await fetch(url, {
             method: 'PUT',
@@ -105,7 +105,7 @@ export const start = async (userId, gameId) => {
 };
 
 export const roll = async (userId, gameId) => {
-    const url = host + '/roll/' + gameId;
+    const url = 'roll/' + gameId;
     try {
         const res = await fetch(url, {
             method: 'PUT',
@@ -126,7 +126,7 @@ export const roll = async (userId, gameId) => {
 };
 
 export const initialRoll = async (userId, gameId) => {
-    const url = host + '/initial-roll/' + gameId;
+    const url = 'initial-roll/' + gameId;
     try {
         const res = await fetch(url, {
             method: 'PUT',

@@ -1,17 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './Turn.css';
 import Clicker from '../clicker/Clicker';
 import DieClicker from '../die-clicker/DieClicker';
 import BidButton from '../bid-button/BidButton';
+import { GameContext } from '../../context/game.context';
+
 
 function Turn(props) {
-
+    const { players, count, value, lastBidCount, lastBidValue, call, bid} = useContext(GameContext);
     const getAllowed = () => {
-        const totalDice = props.state.players.reduce((total, player) => total += player.dice, 0);
-        const count = props.state.count;
-        const value = props.state.value;
-        const lastBidCount = props.state.lastBidCount;
-        const lastBidValue = props.state.lastBidValue;
+        const totalDice = players.reduce((total, player) => total += player.dice, 0);
 
         if (!lastBidCount && !lastBidValue) { // first bid, anything goes
             return {
@@ -46,23 +44,27 @@ function Turn(props) {
             }
         }
 
-
+        return {
+            countUp: (count <= totalDice),
+            countDown: true,
+            valueDown: true
+        }
     }
 
     const allowed = getAllowed();
 
     return (
         <div className="Turn">
-            <BidButton action={props.state.call} label="CALL" />
+            <BidButton action={call} label="CALL" />
             <div className="Turn-clicker-container">
                 <div className="Turn-item">
-                    <Clicker state={props.state} allowed={ allowed }/>
+                    <Clicker allowed={ allowed }/>
                 </div>
                 <div className="Turn-item">
-                    <DieClicker state={props.state} allowed={ allowed }/>
+                    <DieClicker allowed={ allowed }/>
                 </div>
             </div>
-            <BidButton action={props.state.bid} label="BID" />
+            <BidButton action={bid} label="BID" />
 
         </div>
     )

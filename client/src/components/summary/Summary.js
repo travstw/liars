@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useContext }from 'react';
 import './Summary.css';
+import { GameContext } from '../../context/game.context';
+
 
 const DICE_LABELS = new Map([
     [6, 'six'],
@@ -10,15 +12,16 @@ const DICE_LABELS = new Map([
     [1, 'one']
 ]);
 
-function Summary(props) {
-    const dice = props.state.players.reduce((total, player) => {
+function Summary() {
+    const { players, round, lastBidValue, lastBidCount} = useContext(GameContext);
+    const dice = players.reduce((total, player) => {
         total += player.dice;
         return total;
     }, 0);
 
-    const round = props.state.round && props.state.round.round;
-    const natural = props.state.round && props.state.round.natural;
-    const value = props.state.lastBidValue && DICE_LABELS.get(props.state.lastBidValue);
+    const roundNumber = round && round.round;
+    const natural = round && round.natural;
+    const value = lastBidValue && DICE_LABELS.get(lastBidValue);
 
     const die = <i className={`Summary-die fas fa-dice-${value}`}></i>
 
@@ -26,8 +29,8 @@ function Summary(props) {
         <div className="Summary">
             <div className="Summary-container">
                 <div className="Summary-item-container">
-                    <div className="Summary-item">{`Round: ${round}`}</div>
-                    <div className="Summary-item">{`Bid: ${props.state.lastBidCount}  `}{die}</div>
+                    <div className="Summary-item">{`Round: ${roundNumber}`}</div>
+                    <div className="Summary-item">{`Bid:  ${lastBidCount}  `}{die}</div>
                     <div className="Summary-item">{`Dice: ${dice}`}</div>
                     {/* <div className="Summary-item">{`Odds: ${odds}%`}</div> */}
                 </div>

@@ -85,7 +85,7 @@ app.put('/turn/:gameId', async (req, res, next) => {
         }
         const updated = await game.turn(userId, gameId, turn);
         const decorated = game.decorateClientPayload(userId, updated)
-        socket.updateSocket(gameId, updated);
+        socket.updateSocket(gameId, updated, decorated.gameStateId);
         res.send(decorated);
     } catch(e) {
         next(e)
@@ -104,7 +104,7 @@ app.put('/game/:gameId/start', async (req, res, next) => {
         const started = await game.start(userId, gameId);
         const decorated = game.decorateClientPayload(userId, started)
 
-        socket.updateSocket(gameId, started);
+        socket.updateSocket(gameId, started, decorated.gameStateId);
         res.send(decorated);
     } catch(e) {
         next(e);
@@ -122,7 +122,7 @@ app.put('/roll/:gameId', async (req, res, next) => {
         const rolled = await game.roll(userId, gameId);
         const decorated = game.decorateClientPayload(userId, rolled)
 
-        socket.updateSocket(gameId, rolled);
+        socket.updateSocket(gameId, rolled, decorated.gameStateId);
         res.send(decorated);
     } catch(e) {
         next(e);
@@ -139,7 +139,7 @@ app.put('/initial-roll/:gameId', async (req, res, next) => {
         const rolled = await game.initialRoll(userId, gameId);
         const decorated = game.decorateClientPayload(userId, rolled)
 
-        socket.updateSocket(gameId, rolled);
+        socket.updateSocket(gameId, rolled, decorated.gameStateId);
         res.send(decorated);
     } catch(e) {
         next(e);

@@ -1,11 +1,12 @@
 const store = require('./store');
 const { v4: uuidv4 } = require('uuid');
+const shortId = require('shortid');
 const Round = require('./round');
 
 
 const create = async (user) => {
-    const gameId = uuidv4();
-    const userId = uuidv4();
+    const gameId = shortId.generate();
+    const userId = shortId.generate();
     const game = {
         gameId,
         active: false,
@@ -43,7 +44,7 @@ const join = async (user, gameId) => {
     const clone = {...game};
     const newUser = {
         user,
-        userId: uuidv4(),
+        userId: shortId.generate(),
         dice: 5,
         initialRoll: null
     }
@@ -281,19 +282,21 @@ const updateGameState = (game) => {
     game.rounds.push(new Round(game.players, round));
 };
 
-const decorateClientPayload = (userId, game) => {
-    let round = game.rounds[game.rounds.length - 1];
+const decorateClientPayload = (userId, game, gameStateId) => {
+    let round = game && game.rounds && game.rounds[game.rounds.length - 1];
     let lastRound;
     if (round && !round.turns.length) {
         lastRound = game.rounds[game.rounds.length - 2];
     }
 
+    const currentBid = round ? round.getLastBid(): undefined;
+
     return {
         gameId: game.gameId,
-        orderOfPlay: game.orderOfPlay,
-        currentBid: round ? round.getLastBid(): undefined,
-        lastTurn: lastRound ? lastRound.getLastTurn(): round ? round.getLastTurn(): undefined,
-        nextTurn: round && !game.winner ? round.getNextTurn(): undefined,
+        gameStateId: gameStateId ? gameStateId: shortId.generate(),
+        userId: userId,
+        lastBidCount: currentBid && currentBid.count,
+        lastBidValue: currentBid && currentBid.value,
         round: round ? round.getRound(userId): undefined,
         players: game.players.map(p => {
             if (p.userId === userId) {
@@ -305,7 +308,8 @@ const decorateClientPayload = (userId, game) => {
                 initialRoll: p.initialRoll
             };
         }),
-        message: 'message',
+        hand: [],
+        message: ['message'],
         winner: game.winner,
         startedOn: game.startedOn,
         endedOn: game.endedOn,
@@ -342,6 +346,15 @@ const sortPlayerTurns = (a, b) => {
 
     return 0;
 };
+
+const setPlayOrder = (game) => {
+    const players = [...game.players];
+    const lastTurn = players.shift();
+    players.push(lastTurn);
+    game.players = players;
+
+    return game;
+}
 
 
 module.exports = { create, decorateClientPayload, get, join, leave, initialRoll, roll, start, turn };

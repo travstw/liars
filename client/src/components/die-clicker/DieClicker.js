@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Die from '../die/Die';
-import './DieClicker.css'
+import './DieClicker.css';
+import { GameContext } from '../../context/game.context';
 
 const DICE_LABELS = new Map([
     [6, 'six'],
@@ -13,27 +14,29 @@ const DICE_LABELS = new Map([
 
 
 function DieClicker(props) {
+    const { value, valueChange } = useContext(GameContext);
+
     const getDiceString = (die) => {
         return DICE_LABELS.get(die);
     }
     const handleIncrement = () => {
-        if (props.state.value === 6) {
+        if (value === 6) {
             return;
         }
-        props.state.valueChange(props.state.value + 1);
+        valueChange(value + 1);
     }
     const handleDecrement = () => {
-        if (props.state.value === 1) {
+        if (value === 1) {
             return;
         }
-        props.state.valueChange(props.state.value - 1);
+        valueChange(value - 1);
     }
     return (
         <div className="DieClicker">
-            <i onClick={props.state.value < 6 ? handleIncrement: undefined}
-                className={`Die-clicker-caret ${props.state.value < 6 ? '' : 'disabled'} fas fa-caret-up`}>
+            <i onClick={value < 6 ? handleIncrement: undefined}
+                className={`Die-clicker-caret ${value < 6 ? '' : 'disabled'} fas fa-caret-up`}>
             </i>
-            <Die value={getDiceString(props.state.value)} />
+            <Die value={getDiceString(value)} />
             <i onClick={props.allowed.valueDown ? handleDecrement: undefined}
                 className={`Die-clicker-caret ${props.allowed.valueDown ? '' : 'disabled'} fas fa-caret-down`}>
             </i>

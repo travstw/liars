@@ -15,6 +15,7 @@
 .Header-controls {
     display: flex;
     flex-direction: row;
+    align-items: center;
 }
 
 .Header-control-item {
@@ -22,13 +23,24 @@
     font-size: 3.0rem;
 }
 
-.Header-icon:hover {
+.Header-icon:hover:not(.Header-disabled) {
     cursor: pointer;
     font-size: 3.2rem;
 }
 
 .Header-die {
     color: #9EE493;
+}
+
+.Header-game-id {
+    font-size: 2rem;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.Header-disabled {
+    cursor: not-allowed;
+    opacity: .75;
 }
 
 .tooltip {
