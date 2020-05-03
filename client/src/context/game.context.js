@@ -6,10 +6,10 @@ import * as controller from '../controller';
 
 import io from 'socket.io-client';
 
-// const socket = io();
+const socket = io();
 
 // for dev use 5000
-const socket = io('http://localhost:5000');
+// const socket = io('http://localhost:5000');
 
 
 
