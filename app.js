@@ -11,8 +11,8 @@ const socket = require('./socket');
 const io = socket.init(server);
 
 
-// app.use(express.static(__dirname + '/public'));
-app.use(express.static(path.join(__dirname, 'client/build')));
+app.use(express.static(__dirname + '/public'));
+// app.use(express.static(path.join(__dirname, 'client/build')));
 
 app.use(bodyParser.json());
 

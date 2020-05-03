@@ -5,8 +5,9 @@ class Round {
             p.index = i
             return p;
         });
+        this.prevRound = prevRound;
         this.round = prevRound ? prevRound.round + 1 : 1;
-        this.rolls = this.players.slice().map(p => {
+        this.rolls = this.players.slice().filter(p => !!p.dice).map(p => {
             p.roll = [];
             return p;
         });
@@ -41,6 +42,7 @@ class Round {
                     }),
                 }
             }),
+            numTurns: this.turns.length,
             loser: this.loser,
             endedOn: this.endedOn
         }
@@ -68,7 +70,7 @@ class Round {
         if (allRolled) {
             this.active = true;
             this.startedOn = Date.now();
-            this.setPlayerOrder();
+            this.setInitialPlayerOrder();
         }
 
         return this.active;
@@ -96,11 +98,25 @@ class Round {
     }
 
     setPlayerOrder() {
-        if (this.active) {
-            const last = this.rolls.shift();
-            this.rolls.push(last);
+        const last = this.rolls.shift();
+        this.rolls.push(last);
+        return;
+
+    }
+
+    setInitialPlayerOrder() {
+        console.log(this.rolls);
+         // initial order... based on last person lose if not first round.
+        if (this.prevRound) {
+            const index = this.rolls.findIndex(r => r.user === this.prevRound.loser);
+            const newRolls = this.rolls.slice(0, index);
+            this.rolls.splice(0, newRolls.length);
+            this.rolls = [...this.rolls, ...newRolls];
+            return;
         }
     }
+
+
 
     getLowestDicePlayer = () => {
         let lowest;

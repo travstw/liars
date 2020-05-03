@@ -53,7 +53,11 @@ function Hand(props) {
     const player = players.find(p => p.userId === userId);
     let item;
     if (!player) {
-        // watcher... show nothing
+        // watcher...
+        item = <i className="Hand-leaf fas fa-eye"></i>
+    } else if (player && !player.dice) {
+        // out of the game
+        item = <i className="Hand-leaf fas fa-skull-crossbones"></i>
     } else if (hand.length && (round && !round.endedOn)) {
         item = hand.map(die => <Die key={uuidv4()} value={getStringValue(die)} />)
     } else {

@@ -164,7 +164,7 @@ const turn = async (userId, gameId, turn) => {
         throw new Error('Not all users have rolled in this round');
     }
     const nextTurn = round.getNextTurn();
-    if (nextTurn.userId !== userId) {
+    if (nextTurn.userId !== userId && turn.type === 'bid') {
         throw new Error('Not your turn');
     }
 
@@ -392,10 +392,10 @@ const validateBid = (currentTurn, lastTurn) => {
 };
 
 const sortPlayerTurns = (a, b) => {
-    if (a.initialRoll > b.initialRoll) return 1;
-    if (b.initialRoll > a.initialRoll) return -1;
-    if (a.user.toLowerCase() > b.user.toLowerCase()) return -1;
-    if (b.user.toLowerCase() > a.user.toLowerCase()) return 1;
+    if (a.initialRoll > b.initialRoll) return -1;
+    if (b.initialRoll > a.initialRoll) return 1;
+    if (a.user.toLowerCase() > b.user.toLowerCase()) return 1;
+    if (b.user.toLowerCase() > a.user.toLowerCase()) return -1;
 
     return 0;
 };

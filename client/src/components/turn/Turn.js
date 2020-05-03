@@ -42,7 +42,7 @@ function Turn(props) {
     }
 
     const getAllowed = () => {
-        if (!yourTurn) {
+        if (!yourTurn || round.endedOn) {
             return {
                 countUp: false,
                 countDown: false,
@@ -114,8 +114,8 @@ function Turn(props) {
                         {activeTurn ? <Timer timeout={handleTimeout} startValue={TIMEOUT_VALUE}/> : null}
                     </div> */}
                 </div>
-                <BidButton action={ handleBid } label="BID" disabled={!yourTurn}/>
-                <BidButton action={ handleCall } label="CALL" />
+                <BidButton action={ handleBid } label="BID" disabled={!yourTurn || !round || (round && round.endedOn) || (round && !round.active)}/>
+                <BidButton action={ handleCall } label="CALL" disabled={!round || (round && round.endedOn) || (round && !round.numTurns)} />
             </div> }
         </>
     )

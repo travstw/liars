@@ -12,7 +12,7 @@ function Players() {
     if (round && round.active) {
         currentPlayers = round.rolls;
     } else {
-        currentPlayers = players.filter(p => p.type === 'player');
+        currentPlayers = players.filter(p => p.type === 'player' && p.dice > 0);
     }
 
     return (
