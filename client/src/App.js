@@ -1,9 +1,14 @@
 import React from 'react';
-import Game from './components/game/Game';
+import AppContainer from './components/app-container/AppContainer';
 import './App.css';
+import { GameProvider } from './context/game.context';
 
 export function App() {
-    return <Game />
-  }
+  return (
+    <GameProvider>
+      <AppContainer />
+    </GameProvider>
+  )
+}
 
 export default App;

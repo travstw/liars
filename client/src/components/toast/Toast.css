@@ -1,0 +1,23 @@
+.Toast {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10rem;
+    width: 30rem;
+    font-size: 1.5rem;
+    border-radius: 5px;
+}
+
+.Toast-winner {
+    background-color: green;
+}
+
+.Toast-loser {
+    background-color: orange;
+}
+
+.Toast-error {
+    background-color: red;
+}
+

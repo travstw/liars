@@ -15,22 +15,49 @@ const DICE_LABELS = new Map([
 ]);
 
 function Hand(props) {
-    const { hand, roll, round } = useContext(GameContext);
+    const { players, userId, gameId, hand, initialRoll, roll, round, active , start, nextRound } = useContext(GameContext);
     const getStringValue = (die) => {
         return DICE_LABELS.get(die);
     }
 
     const handleClick = () => {
-        roll();
+        if (!active) {
+            return start(userId, gameId);
+        }
+
+        if (!round) {
+            return initialRoll(userId, gameId);
+        }
+
+        if (round && !round.endedOn) {
+            return roll(userId, gameId);
+        }
+
+        if (round && round.endedOn) {
+            return nextRound(userId, gameId);
+        }
     }
 
+    const setButtonLabel = () => {
+        if (!active) {
+            return 'Start';
+        } else if (!round) {
+            return 'Roll Turn';
+        } else if (round && !round.endedOn) {
+            return 'Roll';
+        } else if (round && round.endedOn) {
+            return `Next Round`;
+        }
+    }
+
+    const player = players.find(p => p.userId === userId);
     let item;
-    if (!hand) {
+    if (!player) {
         // watcher... show nothing
-    } else if (hand.length) {
+    } else if (hand.length && (round && !round.endedOn)) {
         item = hand.map(die => <Die key={uuidv4()} value={getStringValue(die)} />)
     } else {
-        item = <button onClick={handleClick} className="Hand-roll-button">Roll</button>
+        item = <button onClick={handleClick} className="Hand-roll-button">{setButtonLabel()}</button>
     }
 
     const natural = round && round.natural;

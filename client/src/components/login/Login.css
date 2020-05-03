@@ -1,0 +1,55 @@
+.Login {
+    height: 100vh;
+    width: 100vw;
+}
+
+.Login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    height: 65vh;
+    width: 30vh;
+}
+
+.Login-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+.Login-input {
+    height: 5rem;
+    font-size: 2.5rem;
+    padding: 3px;
+}
+
+.Login-button {
+    background-color: #336699;
+    color: #F1FFFA;
+    border-radius: 0px;
+    border: none;
+    width: 100%;
+    height: 5rem;
+    font-size: 2.5rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.Login-button:hover {
+    transform: translateY(-1px);
+}
+
+.Login-die {
+    color: #9EE493;
+}
+
+.Login-title {
+    font-size: 3rem;
+    font-weight: 600;
+}
+

@@ -1,14 +1,22 @@
 
 class Round {
     constructor(players, prevRound) {
-        this.players = players;
+        this.players = players.map((p, i) => {
+            p.index = i
+            return p;
+        });
         this.round = prevRound ? prevRound.round + 1 : 1;
-        this.rolls = {};
+        this.rolls = this.players.slice().map(p => {
+            p.roll = [];
+            return p;
+        });
         this.active = false;
         this.turns = [];
         this.endedOn;
         this.startedOn;
         this.natural = false;
+        this.called = false;
+        this.loser;
     }
 
     getRound(userId) {
@@ -16,18 +24,31 @@ class Round {
             round: this.round,
             active: this.active,
             natural: this.natural,
-            rolls: Object.keys(this.rolls).reduce((acc, curr) => {
-                const user = this.players.find(p => p.userId === curr);
-                acc[user.user] = this.rolls[curr].map(roll => {
-                    if (curr === userId) {
-                        return roll;
-                    } else {
-                        return '?';
+            rolls: this.rolls.map(roll => {
+                if (roll.userId === userId) {
+                    return {
+                        userId: roll.userId,
+                        user: roll.user,
+                        roll: roll.roll.map(r => {
+                            return this.called ? r : '?';
+                        })
                     }
-                });
-                return acc;
-            }, {})
+                }
+                return {
+                    user: roll.user,
+                    roll: roll.roll.map(r => {
+                        return this.called ? r : '?'
+                    }),
+                }
+            }),
+            loser: this.loser,
+            endedOn: this.endedOn
         }
+    }
+
+    getHand(userId) {
+        const user = this.rolls.find(roll => roll.userId === userId);
+        return (user && user.roll) || [];
     }
 
     isReadyToStart() {
@@ -35,10 +56,19 @@ class Round {
             return this.active;
         }
 
-        const activePlayers = this.players.filter(p => p.dice > 0);
-        if (activePlayers.length === Object.keys(this.rolls).length) {
+        let allRolled = true;
+
+        for (const roll of this.rolls) {
+            if (!roll.roll.length) {
+                allRolled = false;
+                break;
+            }
+        }
+
+        if (allRolled) {
             this.active = true;
             this.startedOn = Date.now();
+            this.setPlayerOrder();
         }
 
         return this.active;
@@ -54,32 +84,22 @@ class Round {
             type: turn.type
         }
         this.turns.push(t);
+        if (turn.type === 'call') {
+            this.called = true;
+            return;
+        }
+        this.setPlayerOrder();
     }
 
     getLastTurn() {
         return this.turns[this.turns.length - 1];
     }
 
-    getNextTurn() {
-        if (!this.turns.length) {
-            return this.players[0];
+    setPlayerOrder() {
+        if (this.active) {
+            const last = this.rolls.shift();
+            this.rolls.push(last);
         }
-        const lastTurn = this.getLastTurn()
-        let index = this.players.findIndex(p => p.userId === lastTurn.userId);
-
-        if (lastTurn.type === 'call') {
-            index = lastTurn.status === 'failure' ? index : index - 1;
-        } else {
-            index = index + 1 > this.players.length - 1 ? 0 : index + 1;
-        }
-
-        // player is out of dice.. find next lowest
-        if (!this.players[index].dice) {
-            index = this.getLowestDicePlayer();
-        }
-
-
-        return this.players[index];
     }
 
     getLowestDicePlayer = () => {
@@ -110,12 +130,19 @@ class Round {
         return bid;
     }
 
+    getNextTurn() {
+        return this.rolls[0];
+    }
+
     setRoll(userId, roll) {
-        this.rolls[userId] = roll;
+        const index = this.rolls.findIndex(p => p.userId === userId);
+        const player = {...this.rolls[index]};
+        player.roll = roll;
+        this.rolls.splice(index, 1, player);
     }
 
     getRoll(userId) {
-        return this.rolls[userId];
+        return this.rolls.find(roll => roll.userId === userId);
     }
 
     removeUser(userId) {
@@ -126,6 +153,10 @@ class Round {
     endRound() {
         this.active = false;
         this.endedOn = Date.now();
+    }
+
+    setLoser(loser){
+        this.loser = loser;
     }
 
 

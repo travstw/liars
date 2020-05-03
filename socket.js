@@ -57,7 +57,6 @@ const getUsersInGame = (gameId) => {
 
 const updateSocket = (gameId, updatedGame, gameStateId) => {
     const users = getUsersInGame(gameId);
-    console.log('users', users);
     users.forEach(user => {
         const decorated = game.decorateClientPayload(user.userId, updatedGame, gameStateId);
 

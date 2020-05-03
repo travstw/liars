@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
     /* background-color: #4C364D; */
     padding: 15px 0px 5px 0px;
 }
@@ -10,6 +10,29 @@
 .Header-title {
     font-size: 3.5rem;
     font-weight: 600;
+}
+
+.Header-button {
+    cursor: pointer;
+    border: none;
+    border-radius: none;
+    height: 3.5rem;
+    width: 12rem;
+    background-color: #336699;
+    color: #F1FFFA;
+    font-size: 2rem;
+    text-transform: uppercase;
+}
+
+.Header-button:hover {
+    background-color: #86BBD8;
+}
+
+.Header-disabled {
+    cursor: not-allowed;
+    opacity: .65;
+    background-color: #9EE493;
+    color: #2F4858;
 }
 
 .Header-controls {

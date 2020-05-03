@@ -6,16 +6,23 @@ import { GameContext } from '../../context/game.context';
 
 
 function Players() {
-    const { round } = useContext(GameContext);
-    const players = round.rolls;
+    const { value, round, players } = useContext(GameContext);
+    let currentPlayers;
+
+    if (round && round.active) {
+        currentPlayers = round.rolls;
+    } else {
+        currentPlayers = players.filter(p => p.type === 'player');
+    }
+
     return (
         <div className="Players">
-            { players.map((p, i) =>
+            { currentPlayers && currentPlayers.map((p, i) =>
                 <div
                     key={ uuidv4()}
                     className={`Players-player ${i === 0 ? 'selected': ''}`}
                 >
-                    <Player player={p}/>
+                    <Player round={round} player={p} value={value}/>
                 </div>) }
         </div>
 

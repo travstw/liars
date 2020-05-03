@@ -10,14 +10,15 @@
     flex-direction: row;
     overflow: hidden;
     height: 80vh;
-    width: 70%;
+    width: 70vw;
     margin: auto;
     border: 1px solid rgba(51,102,153, 1);
     border-top: 1px solid #9EE493;
   }
 
   .Game-left-panel {
-    flex-grow: 4;
+    /* flex-grow: 4; */
+    width: 100%;
     display: flex;
     justify-content: space-between;
     flex-direction: column;
@@ -41,7 +42,7 @@
   }
 
   .Game-header {
-    width: 70%;
+    width: 70vw;
     margin: auto;
   }
 
@@ -55,7 +56,9 @@
   }
 
   .Game-turn {
-    flex-grow: 1;
+    height: 22vh;
+    flex-shrink: 1;
+    /* border-top: 1px solid #336699; */
   }
 
   .Game-players {
@@ -70,4 +73,16 @@
     border-top: 1px solid #9EE493;
     /* flex-grow: 1; */
     background-color: #336699;
+  }
+
+  .Game-toast-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    position: absolute;
+    bottom: 20px;
+    left: 0px;
+    z-index: 10;
   }

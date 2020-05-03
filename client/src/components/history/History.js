@@ -9,7 +9,7 @@ function History(props) {
     const { messages } = useContext(GameContext);
     return (
         <div className="History">
-            {messages.map(m => <HistoryItem key={uuidv4()} message={m} />)}
+            {messages && messages.map(m => <HistoryItem key={uuidv4()} message={m} />)}
         </div>
 
     )

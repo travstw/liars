@@ -1,5 +1,11 @@
-import React, { createContext, useState} from 'react';
+import React, { createContext, useState, useEffect} from 'react';
 import moment from 'moment';
+import {v4 as uuidv4 } from 'uuid';
+
+import * as controller from '../controller';
+
+import io from 'socket.io-client';
+const socket = io('http://localhost:5000');
 
 
 
@@ -7,10 +13,7 @@ export const GameContext = createContext();
 
 export function GameProvider(props) {
 
-    const handleStart = () => {
-        console.log('start');
-    }
-
+    // client bid state
     const handleValueChange = (value) => {
         setGameState(prevState => {
             return {...prevState, value }
@@ -23,75 +26,241 @@ export function GameProvider(props) {
         });
     }
 
-    const handleBid = () => {
-        console.log('BID');
+    // Server actions...
+
+    const handleCreate = async(username) => {
+        controller.create(username).then(game => {
+            let toasts = [];
+            if (game.error) {
+                toasts.push({
+                    type: 'error',
+                    message: game.error
+                });
+            }
+            setGameState(prevState => {
+                const newToasts = [...prevState.toasts, ...toasts]
+                game.toasts = newToasts;
+                return {...prevState, ...game };
+            });
+
+            setUserId(game.userId);
+            setGameId(game.gameId);
+        });
     }
 
-    const handleCall = () => {
-        console.log('CALL');
+    const handleJoin = async(username, gameId) => {
+        controller.join(username, gameId).then(game => {
+            let toasts = [];
+            if (game.error) {
+                toasts.push({
+                    type: 'error',
+                    message: game.error
+                });
+            }
+            setGameState(prevState => {
+                const newToasts = [...prevState.toasts, ...toasts]
+                game.toasts = newToasts;
+                return {...prevState, ...game };
+            });
+
+            setUserId(game.userId);
+            setGameId(game.gameId);
+        });
     }
 
-    const handleWatch = () => {
-        console.log('Watch');
+    const handleStart = async (userId, gameId) => {
+        controller.start(userId, gameId).then(game => {
+            let toasts = [];
+            if (game.error) {
+                toasts.push({
+                    type: 'error',
+                    message: game.error
+                });
+            }
+            setGameState(prevState => {
+                const newToasts = [...prevState.toasts, ...toasts]
+                game.toasts = newToasts;
+                return {...prevState, ...game };
+            });
+        });
     }
 
-    const handleLeave = () => {
+    const handleInitialRoll = async (userId, gameId) => {
+        controller.initialRoll(userId, gameId).then(game => {
+            let toasts = [];
+            if (game.error) {
+                toasts.push({
+                    type: 'error',
+                    message: game.error
+                });
+            }
+
+            setGameState(prevState => {
+                const newToasts = [...prevState.toasts, ...toasts]
+                game.toasts = newToasts;
+                return {...prevState, ...game };
+            });
+        });
+    }
+
+    const handleRoll = async (userId, gameId) => {
+        controller.roll(userId, gameId).then(game => {
+            let toasts = [];
+            if (game.error) {
+                toasts.push({
+                    type: 'error',
+                    message: game.error
+                });
+            }
+            setGameState(prevState => {
+                const newToasts = [...prevState.toasts, ...toasts]
+                game.toasts = newToasts;
+                return {...prevState, ...game };
+            });
+        });
+    }
+
+    const handleBid = async (userId, gameId, bid) => {
+        controller.update(userId, gameId, bid)
+            .then(game => {
+                let toasts = [];
+                if (game.error) {
+                    toasts.push({
+                        type: 'error',
+                        message: game.error
+                    });
+                }
+                setGameState(prevState => {
+                    const newToasts = [...prevState.toasts, ...toasts]
+                    game.toasts = newToasts;
+                    return {...prevState, ...game };
+                });
+        });
+    }
+
+    const handleCall = async (userId, gameId) => {
+        controller.update(userId, gameId, { type: 'call' })
+            .then(game => {
+                let toasts = [];
+                if (game.error) {
+                    toasts.push({
+                        type: 'error',
+                        message: game.error
+                    });
+                }
+                setGameState(prevState => {
+                    const newToasts = [...prevState.toasts, ...toasts]
+                    game.toasts = newToasts;
+                    return {...prevState, ...game };
+                });
+        });
+    }
+
+    const handleWatch = async (userId, gameId) => {
+        controller.watch(userId, gameId).then(game => {
+            let toasts = [];
+            if (game.error) {
+                toasts.push({
+                    type: 'error',
+                    message: game.error
+                });
+            }
+            setGameState(prevState => {
+                const newToasts = [...prevState.toasts, ...toasts]
+                game.toasts = newToasts;
+                return {...prevState, ...game };
+            });
+        });
+    }
+
+    const handleNextRound = async (userId, gameId) => {
+        controller.nextRound(userId, gameId).then(game => {
+            let toasts = [];
+            if (game.error) {
+                toasts.push({
+                    type: 'error',
+                    message: game.error
+                });
+            }
+
+            setGameState(prevState => {
+                const newToasts = [...prevState.toasts, ...toasts]
+                game.toasts = newToasts;
+                return {...prevState, ...game };
+            });
+        });
+    }
+
+    const handleLeave = async () => {
         console.log('Leave');
     }
 
-    const handleRoll = () => {
-        console.log('Roll');
+    const handleUpdate = (game) => {
+        let toasts = [];
+        if (game.winner) {
+            toasts.push({
+                type: 'winner',
+                message: `${game.winner} wins!`,
+            })
+        }
+        if (!game.winner && game.round && game.round.endedOn) {
+            toasts.push({
+                type: 'loser',
+                message: `${game.round.loser} loses a die!`
+            })
+        }
+
+        setGameState(prevState => {
+            const newToasts = [...prevState.toasts, ...toasts]
+            game.toasts = newToasts;
+            return {...prevState, ...game};
+        });
     }
 
-    const testState = {
-        active: true,
-        gameId: '4545-656565-6565',
-        gameStateId: '45454',
-        userId: '33432-66565-7565',
-        players: [
-          { user: 'Scott', dice: 3},
-          { user: 'CJ', dice: 4},
-          { user: 'Mike', dice: 5},
-          { user: 'Natasya', dice: 2}
-        ],
-        round: {
-          round: 2,
-          rolls: [
-            { user: 'Scott', roll: [5, 4, 6] },
-            { user: 'CJ', roll: [3, 2, 4, 5] },
-            { user: 'Mike', roll: [3, 2, 5, 5, 5] },
-            { user: 'Natasya', roll: [2, 1]},
-            { user: 'bob', roll: [5, 4, 6] },
-            { user: 'PHil', roll: [3, 2, 4, 5] },
-            { user: 'Pancakes', roll: [3, 2, 5, 5, 5] },
-            { user: 'Bobo', roll: [2, 1]},
-            { user: 'Stan', roll: [5, 4, 6] },
-            { user: 'Sandie', roll: [3, 2, 4, 5] },
-            { user: 'bleep bloop', roll: [3, 2, 5, 5, 5] },
-            { user: 'Sammie', roll: [2, 1]}
-          ],
-          turns: [],
-          natural: false,
-        },
-        messages: [{time: moment().format('HH:mm:ss'), message: 'Scott rules'}, {time: moment().format('HH:mm:ss'), message: 'CJ drools'}],
-        count: 5,
-        value: 6,
-        lastBidCount: 5,
-        lastBidValue: 6,
-        hand: [2, 4, 6],
+    const handlers = {
         valueChange: handleValueChange,
         countChange: handleCountChange,
+        create: handleCreate,
+        join: handleJoin,
         bid: handleBid,
         call: handleCall,
         watch: handleWatch,
+        nextRound: handleNextRound,
         leave: handleLeave,
+        initialRoll: handleInitialRoll,
         roll: handleRoll,
         start: handleStart,
-        winner: undefined,
-        watcher: true,
-        rolling: false,
-      }
-    const [gameState, setGameState] = useState(testState);
+        toasts: []
+    }
+
+    const [ userId, setUserId ] = useState('');
+    const [ gameId,setGameId] = useState('');
+    const [gameState, setGameState] = useState(handlers);
+    const count = gameState.toasts.length;
+
+    useEffect(() => {
+        console.log('called');
+        if (count > 0) {  // prevent this timer from running when there are no toasts
+            setTimeout(() => {
+                setGameState(prevState => {
+                    const toasts = prevState.toasts.slice(1);
+                    const newState = {...prevState, toasts };
+                    return newState;
+                })
+            }, 3000);
+        }
+    }, [count]);
+
+    useEffect(() => {
+        if (!gameId || !userId) {
+            return;
+        }
+        socket.emit('join',{ gameId, userId: userId});
+
+        socket.on('update', (game) => {
+           handleUpdate(game);
+        });
+    }, [gameId, userId]);
 
     return (
         <GameContext.Provider value={gameState}>

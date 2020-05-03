@@ -1,9 +1,10 @@
 .BidButton {
-    width: 100%;
+    width: 20rem;
+    margin-right: 10px;
 }
 
 .BidBtn {
-    border-radius: 0px;
+    border-radius: 5px;
     width: 100%;
     height: 7vh;
     font-size: 2.5rem;
@@ -16,4 +17,9 @@
 .BidBtn:hover {
     cursor: pointer;
     background-color: #F1FFFA;
+}
+
+.BidBtn:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
 }

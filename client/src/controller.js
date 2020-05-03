@@ -37,6 +37,7 @@ export const join = async (user, gameId) => {
 
     } catch (e) {
         console.error(e);
+        return { error: 'An error occured joining the game'};
     }
 };
 
@@ -61,6 +62,7 @@ export const watch = async (userId, gameId) => {
 
     } catch (e) {
         console.error(e);
+        return { error: 'An error occured joining the game'};
     }
 
 };
@@ -82,6 +84,7 @@ export const create = async (user) => {
         return await res.json();
     } catch (e) {
         console.error(e);
+        return { error: 'An error occured creating the game'};
     }
 };
 
@@ -98,12 +101,13 @@ export const update = async (userId, gameId, turn) => {
         });
 
         if (!res.ok) {
-            return { error: 'An error occured processing your turn, please try again'};
+            return { error: 'An error occured processing your turn'};
         }
 
         return await res.json();
     } catch (e) {
         console.error(e);
+        return { error: 'An error occured processing your turn'};
     }
 };
 
@@ -120,12 +124,13 @@ export const nextRound = async (userId, gameId) => {
         });
 
         if (!res.ok) {
-            return { error: 'An error occured adding the round, please try again'};
+            return { error: 'An error occured adding the round'};
         }
 
         return await res.json();
     } catch (e) {
         console.error(e);
+        return { error: 'An error occured adding the round'};
     }
 };
 
@@ -141,12 +146,13 @@ export const start = async (userId, gameId) => {
         });
 
         if (!res.ok) {
-            return { error: 'An error occured starting the game, please try again'};
+            return { error: 'An error occured starting the game'};
         }
 
         return await res.json();
     } catch (e) {
         console.error(e);
+        return { error: 'An error occured starting the game'};
     }
 };
 
@@ -162,12 +168,13 @@ export const roll = async (userId, gameId) => {
         });
 
         if (!res.ok) {
-            return { error: 'An error occured processing your roll, please try again'};
+            return { error: 'An error occured processing your roll'};
         }
 
         return await res.json();
     } catch (e) {
         console.error(e);
+        return { error: 'An error occured processing your roll'};
     }
 };
 
@@ -183,11 +190,12 @@ export const initialRoll = async (userId, gameId) => {
         });
 
         if (!res.ok) {
-            return { error: 'An error occured processing your roll, please try again'};
+            return { error: 'An error occured processing your roll'};
         }
 
         return await res.json();
     } catch (e) {
         console.error(e);
+        return { error: 'An error occured processing your roll'};
     }
 };

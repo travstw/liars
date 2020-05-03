@@ -2,13 +2,13 @@ import React from 'react';
 import './BidButton.css';
 
 
-function BidButton(props) {
+function BidButton({action, disabled, label}) {
     const handleClick = () => {
-        props.action();
+        action();
     }
     return (
         <div className="BidButton">
-            <button className="BidBtn" onClick={handleClick} >{props.label}</button>
+            <button className={`BidBtn ${disabled ? 'BidButton-disabled': ''}`} onClick={handleClick} disabled={disabled}>{label}</button>
         </div>
     )
 }

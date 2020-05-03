@@ -1,16 +1,19 @@
+const path = require('path');
 const express = require('express')
 const bodyParser = require('body-parser')
 const game = require('./game');
 const store = require('./store');
 const app = express();
 const server = require('http').Server(app);
-const port = 5000;
+const port = process.env.PORT || 5000;
 const socket = require('./socket');
 
 const io = socket.init(server);
 
 
 // app.use(express.static(__dirname + '/public'));
+app.use(express.static(path.join(__dirname, 'client/build')));
+
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
@@ -48,7 +51,6 @@ app.put('/join/:gameId', async (req, res, next) => {
     const { user } = req.body;
     const { gameId } = req.params;
 
-    console.log(user, gameId);
     try {
         const joined = await game.join(user, gameId);
         const player = joined.players.find(p => p.user === user);
@@ -73,6 +75,21 @@ app.post('/game', async (req, res, next) => {
     }
 });
 
+// watch game
+app.put('/watch/:gameId', async (req, res, next) => {
+    const userId = req.headers.userid;
+    const { gameId } = req.params;
+
+    try {
+        const updated = await game.watch(userId, gameId);
+        const decorated = game.decorateClientPayload(userId, updated)
+        socket.updateSocket(gameId, updated, decorated.gameStateId);
+        res.send(decorated);
+    } catch(e) {
+        next(e)
+    }
+});
+
 // update game
 //  { gameId: id, type: bid | call, count: 4, value: [1-6]}
 app.put('/turn/:gameId', async (req, res, next) => {
@@ -84,6 +101,23 @@ app.put('/turn/:gameId', async (req, res, next) => {
             return res.status(403).send('Not a player in game: ' + gameId);
         }
         const updated = await game.turn(userId, gameId, turn);
+        const decorated = game.decorateClientPayload(userId, updated)
+        socket.updateSocket(gameId, updated, decorated.gameStateId);
+        res.send(decorated);
+    } catch(e) {
+        next(e)
+    }
+});
+
+app.put('/round/:gameId', async (req, res, next) => {
+    const userId = req.headers.userid;
+    const { gameId } = req.params;
+
+    try {
+        if (!store.checkPlayer(gameId, userId)) {
+            return res.status(403).send('Not a player in game: ' + gameId);
+        }
+        const updated = await game.nextRound(userId, gameId);
         const decorated = game.decorateClientPayload(userId, updated)
         socket.updateSocket(gameId, updated, decorated.gameStateId);
         res.send(decorated);

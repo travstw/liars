@@ -17,6 +17,10 @@
     margin-bottom: 8px;
 }
 
+#Clicker-count:disabled {
+    cursor: not-allowed;
+}
+
 .Clicker-caret {
     color: #9EE493;
 }

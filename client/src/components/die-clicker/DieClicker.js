@@ -13,7 +13,7 @@ const DICE_LABELS = new Map([
 ]);
 
 
-function DieClicker(props) {
+function DieClicker({ allowed }) {
     const { value, valueChange } = useContext(GameContext);
 
     const getDiceString = (die) => {
@@ -33,12 +33,12 @@ function DieClicker(props) {
     }
     return (
         <div className="DieClicker">
-            <i onClick={value < 6 ? handleIncrement: undefined}
-                className={`Die-clicker-caret ${value < 6 ? '' : 'disabled'} fas fa-caret-up`}>
+            <i onClick={value < 6 && allowed.valueUp? handleIncrement: undefined}
+                className={`Die-clicker-caret ${value < 6 && allowed.valueUp ? '' : 'disabled'} fas fa-caret-up`}>
             </i>
             <Die value={getDiceString(value)} />
-            <i onClick={props.allowed.valueDown ? handleDecrement: undefined}
-                className={`Die-clicker-caret ${props.allowed.valueDown ? '' : 'disabled'} fas fa-caret-down`}>
+            <i onClick={allowed.valueDown ? handleDecrement: undefined}
+                className={`Die-clicker-caret ${allowed.valueDown ? '' : 'disabled'} fas fa-caret-down`}>
             </i>
         </div>
     )

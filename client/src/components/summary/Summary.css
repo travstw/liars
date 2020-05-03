@@ -8,7 +8,7 @@
     flex-direction: row;
     justify-content: flex-end;
     align-items: center;
-    font-size: 2rem;
+    font-size: 1.5rem;
 }
 
 .Summary-item-container {
@@ -24,6 +24,12 @@
     flex-direction: row;
     align-items: center;
     padding-right: 10px;
+}
+
+.Summary-label {
+    padding-right: 5px;
+    font-size: 1.25rem;
+    opacity: .75;
     text-transform: uppercase;
 }
 

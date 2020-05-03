@@ -29,6 +29,10 @@ $gameId.innerHTML = gameId;
 
 if (!gameId) {
     controller.create(username).then(game => {
+        if (game.error) {
+            alert(game.error);
+            return;
+        }
         gameState = game;
         gameId = game.gameId;
         $gameId.innerHTML = gameId;
@@ -68,10 +72,17 @@ const $bid = document.querySelector('#bid');
 const $call = document.querySelector('#call');
 const $count = document.querySelector('#count');
 const $value = document.querySelector('#value');
+const $round = document.querySelector('#round');
+const $watch = document.querySelector('#watch');
 
 
 $start.addEventListener('click', () => {
     controller.start(userId, gameId).then(game => {
+        if (game.error) {
+            alert(game.error);
+            return;
+        }
+
         if (!game) {
             return;
         }
@@ -82,6 +93,11 @@ $start.addEventListener('click', () => {
 
 $initialRoll.addEventListener('click', () => {
     controller.initialRoll(userId, gameId).then(game => {
+        if (game.error) {
+            alert(game.error);
+            return;
+        }
+
         if (!game) {
             return;
         }
@@ -92,6 +108,11 @@ $initialRoll.addEventListener('click', () => {
 
 $roll.addEventListener('click', () => {
     controller.roll(userId, gameId).then(game => {
+        if (game.error) {
+            alert(game.error);
+            return;
+        }
+
         if (!game) {
             return;
         }
@@ -109,6 +130,11 @@ $bid.addEventListener('click', () => {
 
     bid.userId = userId;
     controller.update(userId, gameId, bid).then(game => {
+        if (game.error) {
+            alert(game.error);
+            return;
+        }
+
         if (!game) {
             return;
         }
@@ -119,6 +145,41 @@ $bid.addEventListener('click', () => {
 
 $call.addEventListener('click', () => {
     controller.update(userId, gameId, {type: 'call'}).then(game => {
+        if (game.error) {
+            alert(game.error);
+            return;
+        }
+
+        if (!game) {
+            return;
+        }
+        gameState = game;
+        update('rest');
+    });
+});
+
+$round.addEventListener('click', () => {
+    controller.nextRound(userId, gameId).then(game => {
+        if (game.error) {
+            alert(game.error);
+            return;
+        }
+
+        if (!game) {
+            return;
+        }
+        gameState = game;
+        update('rest');
+    })
+});
+
+$watch.addEventListener('click', () => {
+    controller.watch(userId, gameId).then(game => {
+        if (game.error) {
+            alert(game.error);
+            return;
+        }
+
         if (!game) {
             return;
         }
@@ -135,9 +196,9 @@ const update = (from) => {
         $socket.innerHTML = JSON.stringify(gameState);
     }
 
-    $game.innerHTML = `${gameState.players.map(p => p.user + ': ' + p.dice + '\n').toString()}
-                        Current Bid: count-> ${gameState.currentBid ? gameState.currentBid.count : null} die-> ${gameState.currentBid ? gameState.currentBid.value : null}
-                        Next Turn: ${gameState.nextTurn}`;
+    $game.innerHTML = '';
+
+
 }
 
 

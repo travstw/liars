@@ -11,7 +11,7 @@ const create = async (user) => {
         gameId,
         active: false,
         createdBy: user,
-        players: [{ user, userId, dice: 5, initialRoll: null }],
+        players: [{ user, userId, dice: 5, initialRoll: null, type: 'player' }],
         rounds: [],
         natural: false
     };
@@ -34,23 +34,46 @@ const join = async (user, gameId) => {
     if (!game) {
         throw new Error('Game not found');
     }
-    if (game.startedOn) {
-        throw new Error('Cannot join a game that has already started');
-    }
+
     const found = game.players.find((u) => u.user === user);
     if (found) {
         throw new Error(`User with name ${user} already exists.`);
     }
+    const type = game.startedOn ? 'watcher': 'player';
     const clone = {...game};
     const newUser = {
         user,
         userId: shortId.generate(),
-        dice: 5,
-        initialRoll: null
+        dice: game.startedOn ? undefined : 5,
+        initialRoll: undefined,
+        type
     }
     clone.players.push(newUser);
     const updated = await store.update(gameId, clone);
-    store.addPlayer(gameId, newUser.userId);
+    if (type === 'player') {
+        store.addPlayer(gameId, newUser.userId);
+    }
+
+    return updated;
+};
+
+const watch = async (userId, gameId) => {
+    const game = await store.get(gameId);
+    if (!game) {
+        throw new Error('Game not found');
+    }
+
+    const clone = {...game};
+    const player = clone.players.map(p => {
+        if (p.userId === userId) {
+            p.type = 'watcher';
+            return p;
+        }
+        return p;
+    });
+
+    const updated = await store.update(gameId, clone);
+    store.removePlayer(gameId, userId);
 
     return updated;
 };
@@ -97,6 +120,30 @@ const start = async (userId, gameId) => {
     const started = await store.update(gameId, clone);
 
     return started;
+};
+
+const nextRound = async (userId, gameId) => {
+    const game = await store.get(gameId);
+    if (!game) {
+        throw new Error('Game not found');
+    }
+
+    // First round is added automatically...
+    // this can't be called until the end of a round.
+    if (!game.rounds.length) {
+        throw new Error('Round cannot be added');
+    }
+
+    const currentRound = game.rounds[game.rounds.length - 1];
+    if (currentRound.active) {
+        throw new Error('Cannot add new round during active round');
+    }
+
+    const clone = {...game};
+    const players = game.players.filter(p => p.type === 'player');
+    clone.rounds.push(new Round(players.sort(sortPlayerTurns), currentRound));
+    const updated = await store.update(gameId, clone);
+    return updated;
 };
 
 
@@ -173,14 +220,15 @@ const initialRoll = async (userId, gameId) => {
     if (player.initialRoll) {
         throw new Error('Already rolled');
     }
-    player.initialRoll = Math.floor(Math.random() * (6 - 1)) + 1;
+    player.initialRoll = Math.floor(Math.random() * (7 - 1)) + 1;
     const clone = {...game};
 
     const allRolled = haveAllPlayersRolled(clone.players);
     if (allRolled) {
         const previousRound = clone.rounds[clone.rounds.length -1];
-        clone.rounds.push(new Round(clone.players, previousRound));
-        clone.players = clone.players.sort(sortPlayerTurns);
+        const players = clone.players.filter(p => p.type === 'player');
+
+        clone.rounds.push(new Round(players.sort(sortPlayerTurns), previousRound));
     }
 
     const updated = await store.update(gameId, clone);
@@ -191,7 +239,7 @@ const initialRoll = async (userId, gameId) => {
 const haveAllPlayersRolled = (players) => {
     let rolled = true;
     players.forEach(p => {
-        if (!p.initialRoll) {
+        if (p.type === 'player' && !p.initialRoll) {
             rolled = false;
         }
     });
@@ -212,18 +260,19 @@ const roll = async (userId, gameId) => {
 
     const round = clone.rounds[clone.rounds.length - 1];
     const user = clone.players.find(p => p.userId === userId);
-    const userRound = round.getRoll[userId];
-    if (userRound) {
+    const userRound = round.getRoll(userId);
+    if (userRound.roll.length) {
         throw new Error('User already rolled this round');
     }
     const numDice = user.dice;
 
     const roll = [];
     for (let i = 0; i < numDice; i++) {
-        roll.push(Math.floor(Math.random() * (6 - 1)) + 1);
+        roll.push(Math.floor(Math.random() * (7 - 1)) + 1);
     }
 
     round.setRoll(userId, roll);
+    round.isReadyToStart();
 
     const updated = await store.update(gameId, clone);
 
@@ -235,11 +284,10 @@ const updateGameState = (game) => {
     const rolls = round.rolls;
     const bid = round.getLastBid();
     const call = round.getLastTurn(); // only in this method if last turn is 'call'
-    const dice = Object.keys(rolls).map(p => rolls[p])
-        .reduce((acc, curr) => {
-            acc = acc.concat(curr);
-            return acc;
-        }, []);
+    const dice = rolls.reduce((acc, curr) => {
+        acc = acc.concat(curr.roll);
+        return acc;
+    }, [])
 
     const total = dice.reduce((acc, curr) => {
         if (curr === bid.value) {
@@ -254,15 +302,18 @@ const updateGameState = (game) => {
     }, 0);
 
     // call successful
+    let loser;
     if (total < bid.count) {
         call.status = 'success';
-        const loser = game.players.find(p => p.userId === bid.userId);
+        loser = game.players.find(p => p.userId === bid.userId);
         loser.dice--;
     } else {
         call.status = 'failure';
-        const loser = game.players.find(p => p.userId === call.userId);
+        loser = game.players.find(p => p.userId === call.userId);
         loser.dice--;
     }
+
+    round.setLoser(loser.user);
 
     const alive = game.players.reduce((acc, curr) => {
         if (curr.dice > 0) {
@@ -276,14 +327,12 @@ const updateGameState = (game) => {
         game.winner = alive[0].user;
         return;
     }
-
-    // start new round if game is still going
     round.endRound();
-    game.rounds.push(new Round(game.players, round));
 };
 
 const decorateClientPayload = (userId, game, gameStateId) => {
     let round = game && game.rounds && game.rounds[game.rounds.length - 1];
+    const user = game && game.players.find(p => p.userId === userId);
     let lastRound;
     if (round && !round.turns.length) {
         lastRound = game.rounds[game.rounds.length - 2];
@@ -295,8 +344,11 @@ const decorateClientPayload = (userId, game, gameStateId) => {
         gameId: game.gameId,
         gameStateId: gameStateId ? gameStateId: shortId.generate(),
         userId: userId,
-        lastBidCount: currentBid && currentBid.count,
-        lastBidValue: currentBid && currentBid.value,
+        user: game.players.find(p => p.userId === userId).user,
+        count: (currentBid && currentBid.count) || 0,
+        value: (currentBid && currentBid.value) || 1,
+        lastBidCount: (currentBid && currentBid.count) || 0,
+        lastBidValue: (currentBid && currentBid.value) || 1,
         round: round ? round.getRound(userId): undefined,
         players: game.players.map(p => {
             if (p.userId === userId) {
@@ -305,11 +357,12 @@ const decorateClientPayload = (userId, game, gameStateId) => {
             return {
                 user: p.user,
                 dice: p.dice,
-                initialRoll: p.initialRoll
+                initialRoll: p.initialRoll,
+                type: p.type
             };
-        }),
-        hand: [],
-        message: ['message'],
+        }).filter(playah => playah.type === 'player'),
+        hand: round ? round.getHand(userId) : [],
+        messages: ['message'],
         winner: game.winner,
         startedOn: game.startedOn,
         endedOn: game.endedOn,
@@ -339,8 +392,8 @@ const validateBid = (currentTurn, lastTurn) => {
 };
 
 const sortPlayerTurns = (a, b) => {
-    if (a.initialRoll > b.initialRoll) return -1;
-    if (b.initialRoll > a.initialRoll) return 1;
+    if (a.initialRoll > b.initialRoll) return 1;
+    if (b.initialRoll > a.initialRoll) return -1;
     if (a.user.toLowerCase() > b.user.toLowerCase()) return -1;
     if (b.user.toLowerCase() > a.user.toLowerCase()) return 1;
 
@@ -357,5 +410,17 @@ const setPlayOrder = (game) => {
 }
 
 
-module.exports = { create, decorateClientPayload, get, join, leave, initialRoll, roll, start, turn };
+module.exports = {
+    create,
+    decorateClientPayload,
+    get,
+    join,
+    leave,
+    initialRoll,
+    roll,
+    start,
+    turn,
+    nextRound,
+    watch
+};
 

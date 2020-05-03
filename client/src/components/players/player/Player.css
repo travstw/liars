@@ -25,15 +25,38 @@
     width: 150px;
 }
 
+.Player-die-container {
+    margin-left: 15px;
+}
+
 .Player-die {
-    height: 40px;
-    width: 40px;
-    font-size: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 3.1rem;
+    width: 3.1rem;
+    font-size: 1.75rem;
     color: #4C364D;
     background-color: #F1FFFA;
-    border-radius: 10px;
-    text-align: center;
-    vertical-align: middle;
-    margin-left: 15px;
+    border-radius: 5px;
+}
+
+
+.Player-match {
+    /* background-color: #9EE493;
+    color: #F1FFFA; */
+    color: #9EE493;
+}
+
+.player-ended {
+    background-color: transparent;
+}
+
+
+.Player-total {
+    color: #F1FFFA;
+    font-size: 2rem;
+    padding: 2rem;
 }
 

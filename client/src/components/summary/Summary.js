@@ -14,10 +14,20 @@ const DICE_LABELS = new Map([
 
 function Summary() {
     const { players, round, lastBidValue, lastBidCount} = useContext(GameContext);
-    const dice = players.reduce((total, player) => {
+    const dice = players && players.reduce((total, player) => {
         total += player.dice;
         return total;
     }, 0);
+
+    const matchedDice = round && round.rolls.reduce((acc, curr) => {
+        acc += curr.roll.reduce((a, c) => {
+            if (c === lastBidValue || (!round.natural && c === 1)) {
+                a++;
+            }
+            return a;
+        }, 0);
+        return acc;
+    }, 0)
 
     const roundNumber = round && round.round;
     const natural = round && round.natural;
@@ -29,10 +39,11 @@ function Summary() {
         <div className="Summary">
             <div className="Summary-container">
                 <div className="Summary-item-container">
-                    <div className="Summary-item">{`Round: ${roundNumber}`}</div>
-                    <div className="Summary-item">{`Bid:  ${lastBidCount}  `}{die}</div>
-                    <div className="Summary-item">{`Dice: ${dice}`}</div>
-                    {/* <div className="Summary-item">{`Odds: ${odds}%`}</div> */}
+                    <div className="Summary-item"><span className="Summary-label">Bid:</span>{lastBidCount || ''}{die}</div>
+                    { round && round.loser ? <div className="Summary-item"><span className="Summary-label">Call:</span>{matchedDice}</div> : null }
+                    { round && round.loser ? <div className="Summary-item"><span className="Summary-label">Loser:</span>{round.loser}</div> : null }
+                    <div className="Summary-item"><span className="Summary-label">Dice:</span>{dice || ''}</div>
+
                 </div>
                 {natural && <i className="Summary-leaf fas fa-leaf"></i>}
             </div>
